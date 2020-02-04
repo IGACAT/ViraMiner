@@ -33,7 +33,7 @@ test_data =  np.loadtxt(args.input_path+"_test.csv",delimiter="\t",dtype=np.uint
 test_counts = test_data[:,:-1]
 test_labels = test_data[:,-1]
 del test_data
-print "train data", train_counts.shape, "      test data", test_counts.shape
+print("train data", train_counts.shape, "      test data", test_counts.shape)
 
 
 
@@ -42,8 +42,8 @@ if args.NN:
  model = KNeighborsClassifier(n_neighbors=1)
  model.fit(train_counts,train_labels) #neigbour
  knn_preds = model.predict(test_counts)
- print "KNN confusion_matrix\n", confusion_matrix(test_labels, knn_preds)
- print "KNN accuracy", accuracy_score(test_labels, knn_preds)
+ print("KNN confusion_matrix\n", confusion_matrix(test_labels, knn_preds))
+ print("KNN accuracy", accuracy_score(test_labels, knn_preds))
  assert False #stop here 
 
 
@@ -52,16 +52,16 @@ if args.NN:
 if args.RF:
  from sklearn.ensemble import RandomForestClassifier
  model = RandomForestClassifier(n_estimators=1000,n_jobs=4)
- print "starting to fit RF"
+ print("starting to fit RF")
  model.fit(train_counts,train_labels) 
- print "done fitting RF"
+ print("done fitting RF")
 
  
  rf_preds_train = model.predict_proba(train_counts)
- print "Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_labels, rf_preds_train[:,1]) 
+ print("Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_labels, rf_preds_train[:,1])) 
 
  rf_preds_test = model.predict_proba(test_counts)
- print "Random Forest TEST ROC area under the curve \n", roc_auc_score(test_labels, rf_preds_test[:,1]) 
+ print("Random Forest TEST ROC area under the curve \n", roc_auc_score(test_labels, rf_preds_test[:,1])) 
  np.savetxt("rf_7mers_preds_test.txt", rf_preds_test[:,1], fmt="%.5f")
  np.savetxt("rf_7mers_labels_test.txt", test_labels, fmt="%d")
  assert False #stop here 
@@ -70,24 +70,24 @@ if args.RF:
 if args.LReg:
  from sklearn.linear_model import LogisticRegression
  model = LogisticRegression(fit_intercept=True, max_iter=1000,penalty="l1",C=0.01)
- print "Lreg input data", train_counts.shape
+ print("Lreg input data", train_counts.shape)
  model.fit(train_counts,train_labels)
  
- print "done fitting Log Reg"
+ print("done fitting Log Reg")
  log_preds = model.predict(test_counts)
- print "LogRegr confusion_matrix\n", confusion_matrix(test_labels, log_preds)
+ print("LogRegr confusion_matrix\n", confusion_matrix(test_labels, log_preds))
 
  accuracy = model.score(train_counts,train_labels)
- print "overall train accuracy", accuracy
+ print("overall train accuracy", accuracy)
 
  accuracy = model.score(test_counts, test_labels)
- print "overall test accuracy", accuracy
+ print("overall test accuracy", accuracy)
  
  log_preds_vals = model.predict_proba(test_counts)
- print "LogRegr TEST ROC area under the curve \n", roc_auc_score(test_labels, log_preds_vals[:,1]) # AUC=0.70
+ print("LogRegr TEST ROC area under the curve \n", roc_auc_score(test_labels, log_preds_vals[:,1])) # AUC=0.70
 
  log_preds_vals = model.predict_proba(train_counts)
- print "LogRegr TRAIN ROC area under the curve \n", roc_auc_score(train_labels, log_preds_vals[:,1]) # AUC=0.70
+ print("LogRegr TRAIN ROC area under the curve \n", roc_auc_score(train_labels, log_preds_vals[:,1])) # AUC=0.70
 
  #prms = model.coef_
  #print prms , "\n and bias/intercept: ", model.intercept_
@@ -149,20 +149,20 @@ model.fit(train_counts,train_labels,batch_size=100, epochs=200, callbacks=callba
 ###############################
 
 
-print "TRAIN eval:", model.evaluate(train_counts,train_labels)
-print "TEST eval:", model.evaluate(test_counts,test_labels)
+print("TRAIN eval:", model.evaluate(train_counts,train_labels))
+print("TEST eval:", model.evaluate(test_counts,test_labels))
 
 
 
-print "##########################"
+print("##########################")
 pred_probas = model.predict(test_counts)
-print np.shape(pred_probas), type(pred_probas)
+print(np.shape(pred_probas), type(pred_probas))
 preds = pred_probas>0.5
 
-print pred_probas[:10],preds[:10]
-print "confusion_matrix\n", confusion_matrix(test_labels, np.array(preds,dtype=int))
+print(pred_probas[:10],preds[:10])
+print("confusion_matrix\n", confusion_matrix(test_labels, np.array(preds,dtype=int)))
 
-print "ROC area under the curve \n", roc_auc_score(test_labels, pred_probas)
+print("ROC area under the curve \n", roc_auc_score(test_labels, pred_probas))
 
 #np.savetxt("30N_cls_cnf_predictions.csv",pred_matrix[:,:3],delimiter=',', fmt=["%d","%d","%.3f"])
 

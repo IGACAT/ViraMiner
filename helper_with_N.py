@@ -11,15 +11,15 @@ def DNA_to_onehot_dataset(dataset):
   options_onehot = {'A': [1,0,0,0,0],'C' :[0,1,0,0,0], 'G':[0,0,1,0,0] ,'T':[0,0,0,1,0],'N':[0,0,0,0,1]}
   onehot_data = []
   for row in dataset:
-    onehot_data.append(map(lambda e: options_onehot[e], row))
+    onehot_data.append([options_onehot[e] for e in row])
   onehot_data = np.array(onehot_data)
-  print np.shape(onehot_data)
+  print(np.shape(onehot_data))
   return onehot_data 
 
 # processes a DNA string to onehot
 def DNA_to_onehot(dna_line):
   options_onehot = {'A': [1,0,0,0,0],'C' :[0,1,0,0,0], 'G':[0,0,1,0,0] ,'T':[0,0,0,1,0],'N':[0,0,0,0,1]}
-  onehot_data = map(lambda e: options_onehot[e], dna_line)
+  onehot_data = [options_onehot[e] for e in dna_line]
   onehot_data = np.array(onehot_data)
   return onehot_data 
 
@@ -54,14 +54,14 @@ def generate_batches_from_file(path,batch_size):
     for_counter = 0
     submitted_counter = 0
     last_seq = ""
-    print "generator uses b_size: ", batch_size
+    print("generator uses b_size: ", batch_size)
 
     while 1:
         seqs=[]
         labels=[]
         batch_counter=0 # counts from 0 to batch_size
         
-        print "opened file again"
+        print("opened file again")
         f = open(path)
         for_counter += 1
 
@@ -86,8 +86,8 @@ def generate_batches_from_file(path,batch_size):
                 batch_counter=0
                 seqs=[]
                 labels=[]
-        print "Did all lines in file ",  submitted_counter, total_counter, for_counter
-        print "Unique project names", PROJECT_NAMES
+        print("Did all lines in file ",  submitted_counter, total_counter, for_counter)
+        print("Unique project names", PROJECT_NAMES)
 
         seqs=[]
         labels=[]
@@ -121,10 +121,10 @@ class roc_callback(keras.callbacks.Callback):
         y_pred_val = self.model.predict(self.x_val)
         roc_val = roc_auc_score(self.y_val, y_pred_val)      
         
-        print " AUROC on Validation: ", str(round(roc_val,4))
+        print(" AUROC on Validation: ", str(round(roc_val,4)))
         if roc_val ==0.5: #happens if learning has crashed
           self.model.stop_training = True
-          print "ATTENTION: Stopped learning process, becuase learning had in all probability crashed!"
+          print("ATTENTION: Stopped learning process, becuase learning had in all probability crashed!")
         return
  
     def on_batch_begin(self, batch, logs={}):
@@ -199,10 +199,10 @@ class ModelCheckpointAUROC(Callback):
                 else:
                     if self.monitor_op(current, self.best):
                         if self.verbose > 0:
-                            print('\nEpoch %05d: %s improved from %0.5f to %0.5f,'
+                            print(('\nEpoch %05d: %s improved from %0.5f to %0.5f,'
                                   ' saving model to %s'
                                   % (epoch + 1, "AUROC", self.best,
-                                     current, filepath))
+                                     current, filepath)))
                         self.best = current
                         if self.save_weights_only:
                             self.model.save_weights(filepath, overwrite=True)
@@ -210,11 +210,11 @@ class ModelCheckpointAUROC(Callback):
                             self.model.save(filepath, overwrite=True)
                     else:
                         if self.verbose > 0:
-                            print('\nEpoch %05d: %s did not improve from %0.5f (current: %0.5f)' %
-                                  (epoch + 1, "AUROC", self.best, current))
+                            print(('\nEpoch %05d: %s did not improve from %0.5f (current: %0.5f)' %
+                                  (epoch + 1, "AUROC", self.best, current)))
             else:
                 if self.verbose > 0:
-                    print('\nEpoch %05d: saving model to %s' % (epoch + 1, filepath))
+                    print(('\nEpoch %05d: saving model to %s' % (epoch + 1, filepath)))
                 if self.save_weights_only:
                     self.model.save_weights(filepath, overwrite=True)
                 else:
@@ -305,6 +305,6 @@ class EarlyStoppingAUROC(Callback):
 
     def on_train_end(self, logs=None):
         if self.stopped_epoch > 0 and self.verbose > 0:
-            print('Epoch %05d: early stopping' % (self.stopped_epoch + 1))
+            print(('Epoch %05d: early stopping' % (self.stopped_epoch + 1)))
 
 

@@ -12,7 +12,7 @@ exps_string = ""
 for ex in exps:
   exps_string += "exp"+str(ex)+"_* "
 
-print exps_string
+print(exps_string)
 os.system("cat "+exps_string+" > temp.csv") 
 os.system("shuf temp.csv > serum_set.csv")
 os.system("rm temp.csv")

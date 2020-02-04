@@ -29,24 +29,24 @@ args = parser.parse_args()
 #### Read in the data #########
 ###############################
 train_data = pd.read_csv(args.input_path+"_train.csv",delimiter=",",names=["projects","seqs","label","id"],dtype={"projects":str, "seqs":str,"label":np.int,"id":str})
-print "read the CSV WITH PANDAS\n"
+print("read the CSV WITH PANDAS\n")
 
 train_onehot = DNA_to_onehot_dataset(train_data.seqs)
-print "Option1: converted to onehot!!\n"
+print("Option1: converted to onehot!!\n")
 train_numbers = np.argmax(train_onehot,axis=2)
-print "Option2: converted to numbers!!\n"
-print train_data.seqs[0],type(train_data.seqs),"\n", train_onehot[0], "\n", train_numbers[0]
+print("Option2: converted to numbers!!\n")
+print(train_data.seqs[0],type(train_data.seqs),"\n", train_onehot[0], "\n", train_numbers[0])
 
 
 val_data = pd.read_csv(args.input_path+"_validation.csv",delimiter=",",names=["projects","seqs","label","id"],dtype={"projects":str, "seqs":str,"label":np.int,"id":str})
 val_onehot = DNA_to_onehot_dataset(val_data.seqs)
 val_numbers = np.argmax(val_onehot,axis=2)
-print np.shape(val_data.seqs),np.shape(val_onehot), np.shape(val_numbers)
+print(np.shape(val_data.seqs),np.shape(val_onehot), np.shape(val_numbers))
 
 test_data = pd.read_csv(args.input_path+"_test.csv",delimiter=",",names=["projects","seqs","label","id"],dtype={"projects":str, "seqs":str,"label":np.int,"id":str})
 test_onehot = DNA_to_onehot_dataset(test_data.seqs)
 test_numbers = np.argmax(test_onehot,axis=2)
-print np.shape(test_data.seqs),np.shape(test_onehot), np.shape(test_numbers)
+print(np.shape(test_data.seqs),np.shape(test_onehot), np.shape(test_numbers))
 
 
 
@@ -55,17 +55,17 @@ print np.shape(test_data.seqs),np.shape(test_onehot), np.shape(test_numbers)
 ###################################
 
 RF_model = RandomForestClassifier(n_estimators=1000, n_jobs=4)
-print "\n \n starting to fit RF"
+print("\n \n starting to fit RF")
 RF_model.fit(train_numbers,train_data.label) # maybe should use flattened onehot?
-print "done fitting RF"
+print("done fitting RF")
 
 
 rf_preds_train = RF_model.predict_proba(train_numbers)
-print "Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, rf_preds_train[:,1]) 
+print("Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, rf_preds_train[:,1])) 
 rf_preds_val = RF_model.predict_proba(val_numbers)
-print "Random Forest VAL ROC area under the curve \n", roc_auc_score(val_data.label, rf_preds_val[:,1]) 
+print("Random Forest VAL ROC area under the curve \n", roc_auc_score(val_data.label, rf_preds_val[:,1])) 
 rf_preds_test = RF_model.predict_proba(test_numbers)
-print "Random Forest TEST ROC area under the curve \n", roc_auc_score(test_data.label, rf_preds_test[:,1]) 
+print("Random Forest TEST ROC area under the curve \n", roc_auc_score(test_data.label, rf_preds_test[:,1])) 
 
 ###################################
 ### RANDOM FOREST on flattened one-hot
@@ -78,19 +78,19 @@ flat_onehot_test = test_onehot.reshape((-1,sequence_length*5))
 ######
 
 RF_model = RandomForestClassifier(n_estimators=1000, n_jobs=4)
-print "\n ##########################\n starting to fit RF on onehot"
+print("\n ##########################\n starting to fit RF on onehot")
 RF_model.fit(flat_onehot_train,train_data.label) # maybe should use flattened onehot?
-print "done fitting OneHot RF"
+print("done fitting OneHot RF")
 
 
 rf_preds_train = RF_model.predict_proba(flat_onehot_train)
-print "OneHot Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, rf_preds_train[:,1]) 
+print("OneHot Random Forest TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, rf_preds_train[:,1])) 
 
 rf_preds_val = RF_model.predict_proba(flat_onehot_val)
-print "OneHot Random Forest VAL ROC area under the curve \n", roc_auc_score(val_data.label, rf_preds_val[:,1]) 
+print("OneHot Random Forest VAL ROC area under the curve \n", roc_auc_score(val_data.label, rf_preds_val[:,1])) 
 
 rf_preds_test = RF_model.predict_proba(flat_onehot_test)
-print "OneHot Random Forest TEST ROC area under the curve \n", roc_auc_score(test_data.label, rf_preds_test[:,1]) 
+print("OneHot Random Forest TEST ROC area under the curve \n", roc_auc_score(test_data.label, rf_preds_test[:,1])) 
 
 np.savetxt("rf_preds_on_onehot_sequence.txt",rf_preds_test[:,1],fmt="%.5f")
 np.savetxt("rf_labels_on_onehot_sequence.txt",test_data.label,fmt="%.5f")
@@ -102,18 +102,18 @@ np.savetxt("rf_labels_on_onehot_sequence.txt",test_data.label,fmt="%.5f")
 ################################
 
 from sklearn.linear_model import LogisticRegression
-print "\n \n starting to fit Logistic regression"
+print("\n \n starting to fit Logistic regression")
 
 model = LogisticRegression(fit_intercept=True, max_iter=1000)
 model.fit(flat_onehot_train,train_data.label) 
-print "done fitting Log Reg"
+print("done fitting Log Reg")
 
 log_preds_train = model.predict_proba(flat_onehot_train)
-print "LogRegr TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, log_preds_train[:,1])
+print("LogRegr TRAIN ROC area under the curve \n", roc_auc_score(train_data.label, log_preds_train[:,1]))
 log_preds_val = model.predict_proba(flat_onehot_val)
-print "LogRegr VAL ROC area under the curve \n", roc_auc_score(val_data.label, log_preds_val[:,1])
+print("LogRegr VAL ROC area under the curve \n", roc_auc_score(val_data.label, log_preds_val[:,1]))
 log_preds_test = model.predict_proba(flat_onehot_test)
-print "LogRegr TEST ROC area under the curve \n", roc_auc_score(test_data.label, log_preds_test[:,1]) 
+print("LogRegr TEST ROC area under the curve \n", roc_auc_score(test_data.label, log_preds_test[:,1])) 
 
 
 #prms = model.coef_

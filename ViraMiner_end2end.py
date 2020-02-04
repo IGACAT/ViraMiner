@@ -37,7 +37,7 @@ def lr_decay(epoch):
   epochs_drop=5.0
   lrate = initial_lrate * np.power(drop,int((1+epoch)/epochs_drop))
   lrate=np.max([initial_lrate/100,lrate])
-  print "lr_decay called, new lr ", lrate
+  print("lr_decay called, new lr ", lrate)
   return lrate
 
 #################################################
@@ -49,11 +49,11 @@ def wc(filename):
     return int(check_output(["wc", "-l", filename]).split()[0])
 
 train_set_size = wc(args.input_path+"_train.csv")
-print "train_set_size,val_size, test_set_size",train_set_size
+print("train_set_size,val_size, test_set_size",train_set_size)
 
 tr_steps_per_ep = int(train_set_size/args.batch_size)
 
-print "##\n input data: \n ", args.input_path, "\n##"
+print("##\n input data: \n ", args.input_path, "\n##")
 
 #######################
 # read in test and validation data, train data wil be read with a "generator"
@@ -147,15 +147,15 @@ model.fit_generator(generate_batches_from_file(args.input_path+"_train.csv",args
 ###############################
 ####Testing the model##########
 ###############################
-print "\n ########### Loading the saved model (i.e best model) ###############"
+print("\n ########### Loading the saved model (i.e best model) ###############")
 model = load_model(args.save_path+".hdf5")
 
-print "##########################"
+print("##########################")
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_test.csv",args.batch_size), steps=te_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(test_labels),:]
-print "TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas)
+print("TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas))
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_validation.csv",args.batch_size), steps=val_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(val_labels),:]
-print "VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas)
+print("VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas))

@@ -39,7 +39,7 @@ def lr_decay(epoch):
   epochs_drop=5.0
   lrate = initial_lrate * np.power(drop,int((1+epoch)/epochs_drop))
   lrate=np.max([initial_lrate/100,lrate])
-  print "lr_decay called, new lr ", lrate
+  print("lr_decay called, new lr ", lrate)
   return lrate
 
 #################################################
@@ -51,7 +51,7 @@ def wc(filename):
     return int(check_output(["wc", "-l", filename]).split()[0])
 
 train_set_size = wc(args.input_path+"_train.csv")
-print "train_set_size: ",train_set_size
+print("train_set_size: ",train_set_size)
 
 # nr of steps generator needs to make per epoch
 tr_steps_per_ep = int(train_set_size/args.batch_size)
@@ -182,28 +182,28 @@ if args.finetuning=="True":
 ###############################
 
 #We need to use the best model(that we saved), not the current weights. We reload the model
-print "########### ViraMiner without fine-tuning ###############"
+print("########### ViraMiner without fine-tuning ###############")
 model = load_model(args.save_path+"_beforeFT.hdf5")
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_test.csv",args.batch_size), steps=te_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(test_labels),:]
-print "TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas)
+print("TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas))
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_validation.csv",args.batch_size), steps=val_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(val_labels),:]
-print "VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas)
+print("VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas))
 
 
-print "\n\n ########### ViraMiner with fine-tuning ###############"
+print("\n\n ########### ViraMiner with fine-tuning ###############")
 model = load_model(args.save_path+"_afterFT.hdf5")
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_test.csv",args.batch_size), steps=te_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(test_labels),:]
-print "TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas)
+print("TEST ROC area under the curve \n", roc_auc_score(test_labels, pred_probas))
 
 pred_probas = model.predict_generator(generate_batches_from_file(args.input_path+"_validation.csv",args.batch_size), steps=val_steps_per_ep+1,workers=1, use_multiprocessing=False)
 pred_probas = pred_probas[:len(val_labels),:]
-print "VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas)
+print("VAL ROC area under the curve \n", roc_auc_score(val_labels, pred_probas))
 
 
 
