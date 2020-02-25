@@ -14,7 +14,7 @@ I trained a frequency branch, a pattern branch, and then merged them with the th
 The file predict\_only.py can be used to do prediction.  This should produce a file with 'pred\_labels' in the name that has the predictions.  A classification report (with f1 score, precision, recall, etc.) can be computed from the correct labels with the program /Plinko/utils/classification\_report.py.  It requires scikit-learn.
 
 ViraMiner requires csv files.  Plinko fasta files and taxid (label) files can be transformed into csv files with the command:
-/Plinko/utils/convert\_format.py fasta\_file taxid\_file --type viraminer 1> fasta\_file.csv  
+`/Radogest/utils/convert_format.py fasta_file taxid_file --type viraminer 1> fasta_file.csv`  
 
 The assert statement in helper\_with\_N.py is commented out, but if you want it, change the assert statement in helper\_with\_N.py line 98 to check the correct sequence length.
 
