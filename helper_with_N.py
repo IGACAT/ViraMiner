@@ -93,10 +93,10 @@ def generate_batches_from_file(path, batch_size):
             line = line[:-1]  #remove \n
 
             seq, lab = process_line(line)  # we remove seq_ID
-            assert len(
-                seq
-            ) == 100, "sequence length should be fixed to 100!, but is " + str(
-                len(seq)) + " at line" + str(total_counter)
+            # assert len(
+            #     seq
+            # ) == 100, "sequence length should be fixed to 100!, but is " + str(
+            #     len(seq)) + " at line" + str(total_counter)
 
             #just a double-check that we moved to next line
             assert not (seq == last_seq), str(seq)

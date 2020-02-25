@@ -4,6 +4,19 @@ See "Testing models" sections below, but in short:
 2) for using the best model - ViraMiner with pre-trained branches and without fine-tuning:
    python2 predict_only.py --input_file your_test_data.csv --model_path final_ViraMiner/final_ViraMiner_beforeFT.hdf5 > test_output.txt
 
+# Instructions for getting ViraMiner to work and compare it to Plinko
+
+The sequence length is hard coded in multiple code files.  So, you have to modify the code files to get the sequence length that you want.
+I believe that all sequence lengths must be the same.  So, you cannot predict on 300mers if you trained on 100mers.
+
+I trained a frequency branch, a pattern branch, and then merged them with the three code files provided, so you need to change sequence\_length in frequency\_branch.py, pattern\_branch.py, merge\_and\_retrain.py.  Instructions for how to do that are in the following sections.  
+
+The file predict\_only.py can be used to do prediction.  This should produce a file with 'pred\_labels' in the name that has the predictions.  A classification report (with f1 score, precision, recall, etc.) can be computed from the correct labels with the program /Plinko/utils/classification\_report.py.  It requires scikit-learn.
+
+ViraMiner requires csv files.  Plinko fasta files and taxid (label) files can be transformed into csv files with the command:
+/Plinko/utils/convert\_format.py fasta\_file taxid\_file --type viraminer 1> fasta\_file.csv  
+
+The assert statement in helper\_with\_N.py is commented out, but if you want it, change the assert statement in helper\_with\_N.py line 98 to check the correct sequence length.
 
 # Overall workflow for results as described in the article "ViraMiner: Deep Learning for identifying viral genomes in human samples"
 
