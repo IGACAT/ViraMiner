@@ -2,11 +2,11 @@
 See "Testing models" sections below, but in short:
 1) format your data as "seq_id,sequence,label", where sequences are given in letters "ATCG...", labels are 1 or 0.
 2) for using the best model - ViraMiner with pre-trained branches and without fine-tuning:
-   python2 predict_only.py --input_file your_test_data.csv --model_path final_ViraMiner/final_ViraMiner_beforeFT.hdf5 > test_output.txt
+   python predict_only.py --input_file your_test_data.csv --model_path final_ViraMiner/final_ViraMiner_beforeFT.hdf5 > test_output.txt
 
 # Instructions for getting ViraMiner to work and compare it to Plinko
 
-The sequence length is hard coded in multiple code files.  So, you have to modify the code files to get the sequence length that you want.
+ViraMiner was ported to python3.  The sequence length is hard coded in multiple code files.  So, you have to modify the code files to get the sequence length that you want.
 I believe that all sequence lengths must be the same.  So, you cannot predict on 300mers if you trained on 100mers.
 
 I trained a frequency branch, a pattern branch, and then merged them with the three code files provided, so you need to change sequence\_length in frequency\_branch.py, pattern\_branch.py, merge\_and\_retrain.py.  Instructions for how to do that are in the following sections.  
@@ -35,7 +35,7 @@ The assert statement in helper\_with\_N.py is commented out, but if you want it,
 2) There are 3 end-to-end models to choose from (full ViraMiner is trained in steps): pattern_branch.py, frequency_branch.py and ViraMiner_end2end.py (ViraMiner trained end-to-end)
 3) An example of how to train a model is given below. Notice for input_path you give dataset prefix only (without "_train.csv"). For other model types, just replace the python file you use.
 
-python2 frequency_branch.py output_folder/output_model_name --input_path data/DNA_data/fullset --epochs 30 --filter_size 8 --layer_sizes 1000 --dropout 0.1 --learning_rate 0.001 --lr_decay None > output_folder/output_logfile.txt
+python frequency_branch.py output_folder/output_model_name --input_path data/DNA_data/fullset --epochs 30 --filter_size 8 --layer_sizes 1000 --dropout 0.1 --learning_rate 0.001 --lr_decay None > output_folder/output_logfile.txt
 
 4) In the output log file you have VAL AUROC in the last lines, which is the only metric we care about when selecting models. There is also TEST AUROC a few lines above, but this value should be looked at only for the best model. 
 
@@ -43,7 +43,7 @@ python2 frequency_branch.py output_folder/output_model_name --input_path data/DN
 ## 3) Training ViraMiner
 1) Train a Pattern and a Frequency model as described in 3) just above. (or train many of them and select best ones)
 2) To merge the two models as branches of ViraMiner and retrain the output layer, do (for example):
-  python2 merge_and_retrain.py output_folder/output_model_name --input_path data/DNA_data/fullset **--pattern_model final_pattern/pattern_size1200_filter11_0.0001None_drop0.5.hdf5 --freq_model final_freq/freq_size1000_filter8_0.001None_drop0.1.hdf5 --finetuning True** --epochs 30 --dropout 0.1 --learning_rate 0.001 --lr_decay None > output_folder/output_logfile.txt
+  python merge_and_retrain.py output_folder/output_model_name --input_path data/DNA_data/fullset **--pattern_model final_pattern/pattern_size1200_filter11_0.0001None_drop0.5.hdf5 --freq_model final_freq/freq_size1000_filter8_0.001None_drop0.1.hdf5 --finetuning True** --epochs 30 --dropout 0.1 --learning_rate 0.001 --lr_decay None > output_folder/output_logfile.txt
 3) notice that with "finetuning True", also the best not-finetuned model is still saved separately.
    
 
@@ -55,7 +55,7 @@ python2 frequency_branch.py output_folder/output_model_name --input_path data/DN
 3) IMPORTANT: you need to specify the test_set CSV file, not just the dataset prefix as above ("fullset_test.csv", not "fullset")
 4) Usage example 
 
-python2 predict_only.py --input_file data/DNA_data/fullset_test.csv --model_path final_freq/freq_size1000_filter8_0.001None_drop0.1.hdf5 > test_testing.txt
+python predict_only.py --input_file data/DNA_data/fullset_test.csv --model_path final_freq/freq_size1000_filter8_0.001None_drop0.1.hdf5 > test_testing.txt
 
 5) This will create two files - predictions and true labels to the same folder as your model
 
@@ -69,20 +69,20 @@ python2 predict_only.py --input_file data/DNA_data/fullset_test.csv --model_path
 2) Run the n-mer_freq.py :
 
 2.1) To train Random Forest model:
-   python2 n-mer_freq.py --RF True --input_path data/datasetname > out_folder/output_log_filename.txt 
+   python n-mer_freq.py --RF True --input_path data/datasetname > out_folder/output_log_filename.txt 
 
 2.2) To train Logistic Regression model:
 
-   python2 n-mer_freq.py --LReg True --input_path data/datasetname > out_folder/output_log_filename.txt 
+   python n-mer_freq.py --LReg True --input_path data/datasetname > out_folder/output_log_filename.txt 
 
 2.3) To train Nearest Neighbour model (might be slow):
 
-   python2 n-mer_freq.py --NN True --input_path data/datasetname > out_folder/output_log_filename.txt 
+   python n-mer_freq.py --NN True --input_path data/datasetname > out_folder/output_log_filename.txt 
 
 
 2.4) To train Feedforward network model:
 
-   python2 n-mer_freq.py --nmer n_mer_length --input_path data/datasetname --save_path models/out_model_name > out_folder/output_log_filename.txt 
+   python n-mer_freq.py --nmer n_mer_length --input_path data/datasetname --save_path models/out_model_name > out_folder/output_log_filename.txt 
 
    where n_mer_length is the length (1,2,3,4 or 5)
 
@@ -93,7 +93,7 @@ python2 predict_only.py --input_file data/DNA_data/fullset_test.csv --model_path
 
 2) To train a RandomForest run the code, for example:
 
-   python2 baseline_on_sequences.py --input_path data/data_jan2019/0N_300/fullset > out_folder/baseline_on_seq_output.txt 
+   python baseline_on_sequences.py --input_path data/data_jan2019/0N_300/fullset > out_folder/baseline_on_seq_output.txt 
 
 3) notice the code trains 1) RF on not-one-hot-encoded sequences, 2) RF on one-hot-encoded sequences and 3) logistic regression. Make sure you read the good line in output file.
 3.1) you can also try to train k-NearestNeighbor model (uncomment last part), but it takes very very long time.
