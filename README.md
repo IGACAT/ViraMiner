@@ -18,7 +18,7 @@ ViraMiner requires csv files.  Plinko fasta files and taxid (label) files can be
 
 The assert statement in helper\_with\_N.py is commented out, but if you want it, change the assert statement in helper\_with\_N.py line 98 to check the correct sequence length.
 
-ViraMiner does not seem to save its base line (logit regression, random forest, knn) models.
+ViraMiner does not seem to save its base line (logit regression, random forest, knn) models.  Originally, ViraMiner was using a quadratic process to load Radogest generated data (because it was saving fasta record headers in a list), but this was commented out since it didn't really do anything.
 
 # Overall workflow for results as described in the article "ViraMiner: Deep Learning for identifying viral genomes in human samples"
 
